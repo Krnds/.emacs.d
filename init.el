@@ -40,6 +40,10 @@
 (when (display-graphic-p)
   (scroll-bar-mode 0))
 
+;; Change font size globally
+
+(set-face-attribute 'default (selected-frame) :height 100)
+
 ;; ** Themes
 
 (use-package monokai-theme
@@ -69,6 +73,7 @@
 ;; TODO check if this correct
 (use-package projectile
   :ensure t
+  :after (helm)
   :init
   (when (require 'helm nil 'noerror)
     (setq projectile-completion-system 'helm))
@@ -179,6 +184,14 @@
   :config
   (popwin-mode 1))
 
+;; * Shortcut for inserting today's date
+;(defun insert-todays-date (arg)
+;  (interactive "P")
+;  (insert (if arg
+;	      (format-time-string "%d-%m-%Y")
+;	    (format-time-string "%Y-%m-%d"))))
+
+
 ;; * TODO Bigloo
 ;; (require 'bigloo)
 ;; (require 'bmacs)
@@ -203,7 +216,10 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (use-package))))
+ '(package-selected-packages (quote (exec-path-from-shell use-package)))
+ '(safe-local-variable-values
+   (quote
+    ((eval setq-local orgstruct-heading-prefix-regexp ";; ")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -211,3 +227,24 @@
  ;; If there is more than one, they won't work right.
  )
 
+(put 'upcase-region 'disabled nil)
+
+;; packages
+(when (>= emacs-major-version 25)
+  (require 'package)
+  (package-initialize)
+  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
+  )
+
+;; exec path from shell path (for exporting org files to pdf)
+
+(defun set-exec-path-from-shell-PATH ()
+  "Sets the exec-path to the same value used by the user shell"
+  (let ((path-from-shell
+         (replace-regexp-in-string
+          "[[:space:]\n]*$" ""
+          (shell-command-to-string "$SHELL -l -c 'echo $PATH'"))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(set-exec-path-from-shell-PATH)
