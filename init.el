@@ -42,7 +42,7 @@
 
 ;; Change font size globally
 
-(set-face-attribute 'default (selected-frame) :height 100)
+(set-face-attribute 'default (selected-frame) :height 90)
 
 ;; ** Themes
 
@@ -151,7 +151,7 @@
 
 (setq org-todo-keyword-faces
       '(("TODO" . org-todo)
-	("URGENT" . "red4")
+	("URGENT" . "#cc0000")
 	("WAIT" . "orange")
 	("DONE" . "lime green")
 	("CNCL" . "grey50")))
@@ -162,10 +162,13 @@
 			   (67 . "tomato")))
 
 ;; ** Org-emphasis
-(with-eval-after-load 'org
-  (add-to-list 'org-emphasis-alist			   ;;
-	       '("*" (:foreground "brown1"))		   ;;
-	       '("/" (:foreground "aquamarine3"))))	   ;;
+(setq org-emphasis-alist
+  '(("*" (bold :foreground "brown1" ))
+    ("/" (italic :foreground "aquamarine3"))
+    ("_" underline)
+    ("=" (:background "maroon" :foreground "white"))
+    ("~" (:background "deep sky blue" :foreground "MidnightBlue"))
+    ("+" (:strike-through t))))
 
 ;; ** Speed commands
 (setq org-use-speed-commands t)
@@ -216,7 +219,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages (quote (exec-path-from-shell use-package)))
+ '(package-selected-packages
+   (quote
+    (helm-emmet emmet-mode exec-path-from-shell use-package)))
  '(safe-local-variable-values
    (quote
     ((eval setq-local orgstruct-heading-prefix-regexp ";; ")))))
