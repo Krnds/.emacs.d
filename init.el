@@ -2,12 +2,12 @@
 
 (require 'package)
 
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 (setq package-enable-at-startup nil)  ; don't initialize twice!
 
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
-
-(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -25,6 +25,11 @@
 
 (global-unset-key (kbd "C-z"))
 
+(use-package delight
+  ;; Enables you to customise the mode names displayed in the mode line.
+  ;; https://elpa.gnu.org/packages/delight.html
+  :ensure t)
+
 ;; * TODO Files and directories
 
 ;; (let ((default-directory "~/.emacs.d/lisp/"))
@@ -40,27 +45,56 @@
 (when (display-graphic-p)
   (scroll-bar-mode 0))
 
-;; Change font size globally
+;; Change font and font size
 
-(set-face-attribute 'default (selected-frame) :height 90)
+(set-face-attribute 'default (selected-frame) :height 100)
+(add-to-list 'default-frame-alist '(font . "Consolas"))
+(set-frame-font "Consolas" nil t)
 
 ;; ** Themes
 
-(use-package monokai-theme
-  :ensure t
+;;(use-package monokai-theme
+;;  :ensure t
+;;  :init
+;;  (load-theme 'monokai t))
+
+;; (use-package doom-themes
+;;   :ensure t
+;;   :config
+;;   ;; Global settings (defaults)
+;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
+;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
+;;   (load-theme 'doom-molokai t)
+
+;;   ;; Enable flashing mode-line on errors
+;;   (doom-themes-visual-bell-config)
+;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
+;;   (doom-themes-neotree-config)
+;;   ;; Corrects (and improves) org-mode's native fontification.
+;;   (doom-themes-org-config))
+
+(use-package doom-themes
+  ;; A megapack of themes for GNU Emacs, from the Doom Emacs configuration
+  ;; framework.
+  ;; https://github.com/doomemacs/themes
   :init
-  (load-theme 'monokai t))
+  (load-theme 'doom-one t)
+  :config
+  (setq doom-themes-treemacs-theme "doom-colors")
+  (doom-themes-treemacs-config)
+  (doom-themes-org-config))
 
 ;; * Text editing
 
-(add-hook 'text-mode-hook 'turn-on-auto-fill)
-(show-paren-mode 1)			; TODO Move that line
+;; (add-hook 'text-mode-hook 'turn-on-auto-fill)
+;; (show-paren-mode 1)
+					; TODO Move that line
 
 ;; * File/project management
 
 ;; ** Default directory
 (when (eq system-type 'windows-nt)
-  (setq default-directory "C:/Users/Karine/Documents/Emacs/"))
+  (setq default-directory "C:/Users/Karine-PC-portable/emacs"))
 
 ;; ** Shortcut to init file
 (defun kd-find-user-init-file ()
@@ -103,6 +137,7 @@
 ;; * Which-key
 (use-package which-key
   :ensure t
+  :delight
   :defer 2
   :config
   (which-key-mode))
@@ -134,8 +169,8 @@
 (global-set-key (kbd "C-c l") 'org-store-link)
 
 ;; ** Raccourcis pour les blocs de code Org Babel
-(with-eval-after-load "org"
-  (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC")))
+;; (with-eval-after-load "org"
+;;   (add-to-list 'org-structure-template-alist '("sh" "#+BEGIN_SRC sh\n?\n#+END_SRC")))
 
 ;; ** TODO keywords
 (setq org-log-into-drawer t)
@@ -144,16 +179,18 @@
 (setq org-todo-keywords
       '((sequence "TODO(t)"
                   "WAIT(w@)"
-		  "URGENT(u)"
+		  "URGE(u)"
+		  "PROG(p)"
                   "|"
                   "DONE(d)"
 		  "CNCL(c@)")))
 
 (setq org-todo-keyword-faces
       '(("TODO" . org-todo)
-	("URGENT" . "#cc0000")
-	("WAIT" . "orange")
-	("DONE" . "lime green")
+	("URGE" . "#cc0000")
+	("PROG" . "#ffcc33")
+	("WAIT" . "#ef7e49")
+	("DONE" . "#009800")
 	("CNCL" . "grey50")))
 
 ;; ** Custom priorities
@@ -163,11 +200,11 @@
 
 ;; ** Org-emphasis
 (setq org-emphasis-alist
-  '(("*" (bold :foreground "brown1" ))
+  '(("*" (bold :background "#0097a0" :foreground "white"))
     ("/" (italic :foreground "aquamarine3"))
     ("_" underline)
     ("=" (:background "maroon" :foreground "white"))
-    ("~" (:background "deep sky blue" :foreground "MidnightBlue"))
+    ("~" (:background "#b0d8fc" :foreground "#343434"))
     ("+" (:strike-through t))))
 
 ;; ** Speed commands
@@ -186,6 +223,34 @@
   :defer 1
   :config
   (popwin-mode 1))
+
+;; * Emacs dashboard
+(use-package dashboard
+  ;; An extensible emacs startup screen showing you what's most important.
+  ;; https://github.com/emacs-dashboard/emacs-dashboard
+  :ensure t
+  :demand t
+  :config
+  (setq dashboard-items '((recents  . 5)
+                          (projects . 5))
+        dashboard-center-content t
+        dashboard-set-heading-icons t
+        dashboard-set-file-icons t
+        dashboard-page-separator "\n\f\n")
+  (dashboard-setup-startup-hook))
+
+(use-package all-the-icons
+  ;; A utility package to collect various Icon Fonts and propertize them within
+  ;; Emacs.
+  ;; https://github.com/domtronn/all-the-icons.el
+  :ensure t)
+
+(use-package page-break-lines
+  ;; This Emacs library provides a global mode which displays ugly form feed
+  ;; characters as tidy horizontal rules.
+  ;; https://github.com/purcell/page-break-lines
+  :ensure t
+  :delight)
 
 ;; * Shortcut for inserting today's date
 ;(defun insert-todays-date (arg)
@@ -220,11 +285,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (helm-emmet emmet-mode exec-path-from-shell use-package)))
- '(safe-local-variable-values
-   (quote
-    ((eval setq-local orgstruct-heading-prefix-regexp ";; ")))))
+   '(delight dashboard all-the-icons page-break-lines helm-emmet emmet-mode exec-path-from-shell use-package))
+ '(safe-local-variable-values '((eval setq-local orgstruct-heading-prefix-regexp ";; "))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -233,13 +295,6 @@
  )
 
 (put 'upcase-region 'disabled nil)
-
-;; packages
-(when (>= emacs-major-version 25)
-  (require 'package)
-  (package-initialize)
-  (add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/") t)
-  )
 
 ;; exec path from shell path (for exporting org files to pdf)
 
