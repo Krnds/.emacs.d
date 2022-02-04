@@ -53,26 +53,6 @@
 
 ;; ** Themes
 
-;;(use-package monokai-theme
-;;  :ensure t
-;;  :init
-;;  (load-theme 'monokai t))
-
-;; (use-package doom-themes
-;;   :ensure t
-;;   :config
-;;   ;; Global settings (defaults)
-;;   (setq doom-themes-enable-bold t    ; if nil, bold is universally disabled
-;;         doom-themes-enable-italic t) ; if nil, italics is universally disabled
-;;   (load-theme 'doom-molokai t)
-
-;;   ;; Enable flashing mode-line on errors
-;;   (doom-themes-visual-bell-config)
-;;   ;; Enable custom neotree theme (all-the-icons must be installed!)
-;;   (doom-themes-neotree-config)
-;;   ;; Corrects (and improves) org-mode's native fontification.
-;;   (doom-themes-org-config))
-
 (use-package doom-themes
   ;; A megapack of themes for GNU Emacs, from the Doom Emacs configuration
   ;; framework.
@@ -186,8 +166,7 @@
 		  "CNCL(c@)")))
 
 (setq org-todo-keyword-faces
-      '(("TODO" . org-todo)
-	("URGE" . "#cc0000")
+      '(("TODO" . "#cc0000")
 	("PROG" . "#ffcc33")
 	("WAIT" . "#ef7e49")
 	("DONE" . "#009800")
@@ -258,25 +237,6 @@
 ;  (insert (if arg
 ;	      (format-time-string "%d-%m-%Y")
 ;	    (format-time-string "%Y-%m-%d"))))
-
-
-;; * TODO Bigloo
-;; (require 'bigloo)
-;; (require 'bmacs)
-
-;; (when (eq system-type 'gnu/linux)
-;;   (setq bigloo-name "/opt/bigloo/bin/bigloo"
-;; 	ude-repl "/opt/bigloo/bin/bigloo"))
-
-;; (with-eval-after-load 'bee-mode
-;;   (define-key bee-mode-map (kbd "<f7>") 'ude-repl-send-buffer)
-;;   (define-key bee-mode-map (kbd "<f6>") 'bee-repl-send-last-sexp))
-
-;; * File-local variables
-;; Local Variables:
-;; eval: (orgstruct-mode)
-;; eval: (setq-local orgstruct-heading-prefix-regexp ";; ")
-;; End:
 
 ;; * Custom-set variables
 (custom-set-variables
