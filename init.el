@@ -230,7 +230,8 @@
   ;; characters as tidy horizontal rules.
   ;; https://github.com/purcell/page-break-lines
   :ensure t
-  :delight)
+  :delight
+  :hook (dashboard-mode . page-break-lines-mode))
 
 ;; * Shortcut for inserting today's date
 ;(defun insert-todays-date (arg)
