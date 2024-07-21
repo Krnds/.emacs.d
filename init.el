@@ -57,6 +57,7 @@
   ;; A megapack of themes for GNU Emacs, from the Doom Emacs configuration
   ;; framework.
   ;; https://github.com/doomemacs/themes
+  :ensure t
   :init
   (load-theme 'doom-one t)
   :config
