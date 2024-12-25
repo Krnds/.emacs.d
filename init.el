@@ -30,6 +30,8 @@
   ;; https://elpa.gnu.org/packages/delight.html
   :ensure t)
 
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
 ;; * TODO Files and directories
 
 ;; (let ((default-directory "~/.emacs.d/lisp/"))
@@ -234,27 +236,11 @@
   :hook (dashboard-mode . page-break-lines-mode))
 
 ;; * Shortcut for inserting today's date
-;(defun insert-todays-date (arg)
-;  (interactive "P")
-;  (insert (if arg
-;	      (format-time-string "%d-%m-%Y")
-;	    (format-time-string "%Y-%m-%d"))))
-
-;; * Custom-set variables
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(delight dashboard all-the-icons page-break-lines helm-emmet emmet-mode exec-path-from-shell use-package))
- '(safe-local-variable-values '((eval setq-local orgstruct-heading-prefix-regexp ";; "))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; (defun insert-todays-date (arg)
+;;   (interactive "P")
+;;   (insert (if arg
+;; 	      (format-time-string "%d-%m-%Y")
+;; 	    (format-time-string "%Y-%m-%d"))))
 
 (put 'upcase-region 'disabled nil)
 
