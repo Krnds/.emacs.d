@@ -44,6 +44,9 @@
 
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
 
+(use-package eldoc
+  :delight)
+
 ;; * TODO Files and directories
 
 ;; (let ((default-directory "~/.emacs.d/lisp/"))
@@ -140,12 +143,14 @@
 (use-package company
   :ensure t
   :demand
+  :delight company-mode
   :config
   (global-company-mode))
 
 ;; * Rainbow-mode (Karine)
 (use-package rainbow-mode
   :ensure t
+  :delight
   :hook prog-mode)
 
 ;; * Org-mode
