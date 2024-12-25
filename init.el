@@ -104,32 +104,13 @@
 ;; TODO check if this correct
 (use-package projectile
   :ensure t
-  :after (helm)
   :init
-  (when (require 'helm nil 'noerror)
-    (setq projectile-completion-system 'helm))
   (setq projectile-track-known-projects-automatically nil)
   :config
   (projectile-global-mode))
 
 ;; ** Recentf
 (setq recentf-max-saved-items 200)
-
-;; * Helm
-(use-package helm
-  :ensure t
-  :bind (("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x b" . helm-mini)
-         ("M-y" . helm-show-kill-ring)
-         :map helm-map
-         ("<tab>" . helm-execute-persistent-action)
-         ("C-i" . helm-execute-persistent-action)
-         ("C-z" . helm-select-action))
-  :config
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
-  (helm-mode 1))
 
 ;; * Which-key
 (use-package which-key
@@ -272,3 +253,32 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (set-exec-path-from-shell-PATH)
+
+;; * Vertico & friends
+
+(use-package vertico
+  :ensure t
+  :init
+  (setq vertico-cycle t
+        vertico-count 20)
+  (vertico-mode))
+
+(use-package marginalia
+  :ensure t
+  :after vertico
+  :init
+  (marginalia-mode))
+
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless basic)))
+
+(use-package consult
+  :ensure t
+  :bind
+  (("C-x b" . consult-buffer)
+   ("M-y" . consult-yank-pop)
+   ("M-g o" . consult-outline)
+   ("M-s g" . consult-grep)
+   ("M-s l" . consult-line)
+   ("M-s L" . consult-line-multi)))
