@@ -21,7 +21,10 @@
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(unless (package-installed-p 'use-package)
+;; `use-package' is included in Emacs 29. When not present in older
+;; versions, install it.
+(when (and (version< emacs-version "29")
+	   (not (package-installed-p 'use-package)))
   (package-refresh-contents)
   (package-install 'use-package))
 
