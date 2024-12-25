@@ -1,3 +1,15 @@
+;; * Config helpers
+
+(defun kd-font-available-p (font)
+  "Check if FONT is available on the system."
+  (find-font (font-spec :name font)))
+
+(defun kd-use-font (font)
+  "Use FONT if available."
+  (when (kd-font-available-p font)
+    (add-to-list 'default-frame-alist `(font . ,font))
+    (set-frame-font font nil t)))
+
 ;; * Initialization
 
 (require 'package)
@@ -50,8 +62,7 @@
 ;; Change font and font size
 
 (set-face-attribute 'default (selected-frame) :height 100)
-(add-to-list 'default-frame-alist '(font . "Consolas"))
-(set-frame-font "Consolas" nil t)
+(kd-use-font "Consolas")
 
 ;; ** Themes
 
