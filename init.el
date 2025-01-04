@@ -1,3 +1,15 @@
+;; * Config helpers
+
+(defun kd-font-available-p (font)
+  "Check if FONT is available on the system."
+  (find-font (font-spec :name font)))
+
+(defun kd-use-font (font)
+  "Use FONT if available."
+  (when (kd-font-available-p font)
+    (add-to-list 'default-frame-alist `(font . ,font))
+    (set-frame-font font nil t)))
+
 ;; * Initialization
 
 (require 'package)
@@ -9,7 +21,10 @@
 (setq package-archives '(("gnu" . "https://elpa.gnu.org/packages/")
                          ("melpa" . "https://melpa.org/packages/")))
 
-(unless (package-installed-p 'use-package)
+;; `use-package' is included in Emacs 29. When not present in older
+;; versions, install it.
+(when (and (version< emacs-version "29")
+	   (not (package-installed-p 'use-package)))
   (package-refresh-contents)
   (package-install 'use-package))
 
@@ -30,6 +45,11 @@
   ;; https://elpa.gnu.org/packages/delight.html
   :ensure t)
 
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+(use-package eldoc
+  :delight)
+
 ;; * TODO Files and directories
 
 ;; (let ((default-directory "~/.emacs.d/lisp/"))
@@ -48,8 +68,7 @@
 ;; Change font and font size
 
 (set-face-attribute 'default (selected-frame) :height 100)
-(add-to-list 'default-frame-alist '(font . "Consolas"))
-(set-frame-font "Consolas" nil t)
+(kd-use-font "Consolas")
 
 ;; ** Themes
 
@@ -88,32 +107,13 @@
 ;; TODO check if this correct
 (use-package projectile
   :ensure t
-  :after (helm)
   :init
-  (when (require 'helm nil 'noerror)
-    (setq projectile-completion-system 'helm))
   (setq projectile-track-known-projects-automatically nil)
   :config
   (projectile-global-mode))
 
 ;; ** Recentf
 (setq recentf-max-saved-items 200)
-
-;; * Helm
-(use-package helm
-  :ensure t
-  :bind (("M-x" . helm-M-x)
-         ("C-x C-f" . helm-find-files)
-         ("C-x b" . helm-mini)
-         ("M-y" . helm-show-kill-ring)
-         :map helm-map
-         ("<tab>" . helm-execute-persistent-action)
-         ("C-i" . helm-execute-persistent-action)
-         ("C-z" . helm-select-action))
-  :config
-  (when (executable-find "curl")
-    (setq helm-google-suggest-use-curl-p t))
-  (helm-mode 1))
 
 ;; * Which-key
 (use-package which-key
@@ -127,12 +127,14 @@
 (use-package company
   :ensure t
   :demand
+  :delight company-mode
   :config
   (global-company-mode))
 
 ;; * Rainbow-mode (Karine)
 (use-package rainbow-mode
   :ensure t
+  :delight
   :hook prog-mode)
 
 ;; * Org-mode
@@ -234,27 +236,11 @@
   :hook (dashboard-mode . page-break-lines-mode))
 
 ;; * Shortcut for inserting today's date
-;(defun insert-todays-date (arg)
-;  (interactive "P")
-;  (insert (if arg
-;	      (format-time-string "%d-%m-%Y")
-;	    (format-time-string "%Y-%m-%d"))))
-
-;; * Custom-set variables
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(delight dashboard all-the-icons page-break-lines helm-emmet emmet-mode exec-path-from-shell use-package))
- '(safe-local-variable-values '((eval setq-local orgstruct-heading-prefix-regexp ";; "))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; (defun insert-todays-date (arg)
+;;   (interactive "P")
+;;   (insert (if arg
+;; 	      (format-time-string "%d-%m-%Y")
+;; 	    (format-time-string "%Y-%m-%d"))))
 
 (put 'upcase-region 'disabled nil)
 
@@ -270,3 +256,32 @@
     (setq exec-path (split-string path-from-shell path-separator))))
 
 (set-exec-path-from-shell-PATH)
+
+;; * Vertico & friends
+
+(use-package vertico
+  :ensure t
+  :init
+  (setq vertico-cycle t
+        vertico-count 20)
+  (vertico-mode))
+
+(use-package marginalia
+  :ensure t
+  :after vertico
+  :init
+  (marginalia-mode))
+
+(use-package orderless
+  :ensure t
+  :custom (completion-styles '(orderless basic)))
+
+(use-package consult
+  :ensure t
+  :bind
+  (("C-x b" . consult-buffer)
+   ("M-y" . consult-yank-pop)
+   ("M-g o" . consult-outline)
+   ("M-s g" . consult-grep)
+   ("M-s l" . consult-line)
+   ("M-s L" . consult-line-multi)))

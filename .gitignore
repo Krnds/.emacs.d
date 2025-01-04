@@ -9,3 +9,4 @@
 *.elc
 *~
 /eln-cache/
+/custom.el
